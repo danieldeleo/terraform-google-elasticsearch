@@ -32,7 +32,7 @@ resource "google_compute_subnetwork" "elasticsearch_subnetwork" {
 }
 
 module "elasticsearch_cluster" {
-  source = "github.com/terraform-google-modules/kubernetes-engine/google//modules/private-cluster"
+  source = "github.com/terraform-google-modules/terraform-google-kubernetes-engine/modules/private-cluster"
   project_id = "${var.project_id}"
   name = "${var.cluster_name}"
   regional = false
