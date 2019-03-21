@@ -321,7 +321,7 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
 resource "null_resource" "get_cluster_credentials" {
   provisioner "local-exec" {
     command = <<EOF
-        bash wait_for_cluster.sh ${var.project_id} ${var.cluster_name}
+        bash ./scripts/wait_for_cluster.sh ${var.project_id} ${var.cluster_name}
         gcloud container clusters get-credentials ${module.elasticsearch_cluster.name} \
             --zone=${var.zones[0]} && \
         kubectl apply -f "https://raw.githubusercontent.com/GoogleCloudPlatform/marketplace-k8s-app-tools/master/crd/app-crd.yaml"
@@ -333,7 +333,7 @@ resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" 
   provisioner "local-exec" {
     command = <<EOF
         printf "Node pools: %s" ${module.elasticsearch_cluster.node_pools_names}
-        bash wait_for_cluster.sh ${var.project_id} ${var.cluster_name}
+        bash ./scripts/wait_for_cluster.sh ${var.project_id} ${var.cluster_name}
         gcloud container clusters update ${module.elasticsearch_cluster.name} \
         --enable-master-authorized-networks \
         --zone=${var.zones[0]} \
@@ -349,7 +349,7 @@ resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" 
 }
 
 data "external" "get_cloud_shell_ip" {
-  program = ["bash", "get_cloud_shell_ip.sh"]
+  program = ["bash", "./scripts/get_cloud_shell_ip.sh"]
 }
 
 data "google_client_config" "default" {}
