@@ -24,6 +24,11 @@ variable "cluster_name" {
   default     = "private-elasticsearch-cluster"
 }
 
+variable "regional" {
+  description = "Whether to create a regional cluster"
+  default     = false
+}
+
 variable "region" {
   description = "The region to host the cluster in"
   default     = "us-central1"

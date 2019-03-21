@@ -15,7 +15,6 @@
  */
 
 provider "google-beta" {
-  version = "~> 1.20"
   region = "${var.region}"
 }
 
@@ -32,10 +31,10 @@ resource "google_compute_subnetwork" "elasticsearch_subnetwork" {
 }
 
 module "elasticsearch_cluster" {
-  source = "github.com/terraform-google-modules/terraform-google-kubernetes-engine/modules/private-cluster"
+  source = "github.com/terraform-google-modules/terraform-google-kubernetes-engine/modules/private-cluster/"
   project_id = "${var.project_id}"
   name = "${var.cluster_name}"
-  regional = false
+  regional = "${var.regional}"
   region = "${var.region}"
   zones = "${var.zones}"
   network = "${var.network}"
