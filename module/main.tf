@@ -30,7 +30,7 @@ resource "google_compute_subnetwork" "elasticsearch_subnetwork" {
   secondary_ip_range = "${var.secondary_ranges}"
 }
 
-module "private_cluster" {
+module "elasticsearch_cluster" {
   source                     = "github.com/terraform-google-modules/terraform-google-kubernetes-engine/modules/private-cluster/"
   project_id                 = "${var.project_id}"
   name                       = "${var.cluster_name}"
@@ -84,9 +84,9 @@ resource "null_resource" "get_cluster_credentials" {
 
   provisioner "local-exec" {
     command = <<EOF
-        printf "Node pools: %s" ${module.private_cluster.node_pools_names[0]}
+        printf "Node pools: %s" ${module.elasticsearch_cluster.node_pools_names[0]}
         bash ./scripts/wait_for_cluster.sh ${var.project_id} ${var.cluster_name}
-        gcloud container clusters get-credentials ${module.private_cluster.name} \
+        gcloud container clusters get-credentials ${module.elasticsearch_cluster.name} \
             --zone=${var.zones[0]} && \
         kubectl apply -f "https://raw.githubusercontent.com/GoogleCloudPlatform/marketplace-k8s-app-tools/master/crd/app-crd.yaml"
     EOF
@@ -96,9 +96,9 @@ resource "null_resource" "get_cluster_credentials" {
 resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" {
   provisioner "local-exec" {
     command = <<EOF
-        printf "Node pools: %s\n" ${module.private_cluster.node_pools_names[0]}
+        printf "Node pools: %s\n" ${module.elasticsearch_cluster.node_pools_names[0]}
         bash ./scripts/wait_for_cluster.sh ${var.project_id} ${var.cluster_name}
-        gcloud container clusters update ${module.private_cluster.name} \
+        gcloud container clusters update ${module.elasticsearch_cluster.name} \
         --enable-master-authorized-networks \
         --zone=${var.zones[0]} \
         --master-authorized-networks=${var.subnetwork_ip_cidr_range}
@@ -119,12 +119,12 @@ resource "null_resource" "update_cluster_allow_cloud_shell" {
   provisioner "local-exec" {
     command = <<EOF
 
-    gcloud container clusters update ${module.private_cluster.name} \
+    gcloud container clusters update ${module.elasticsearch_cluster.name} \
         --enable-master-authorized-networks \
         --zone=${var.zones[0]} \
         --master-authorized-networks=${lookup(var.master_authorized_cidr_blocks[count.index],"cidr_block")}
 
-    gcloud container clusters get-credentials ${module.private_cluster.name} \
+    gcloud container clusters get-credentials ${module.elasticsearch_cluster.name} \
         --zone=${var.zones[0]}
     EOF
   }

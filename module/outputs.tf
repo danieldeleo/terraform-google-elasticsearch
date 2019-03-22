@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-//output "name" {
-//  description = "Cluster name"
-//  value       = "${module.private_cluster.name}"
-//}
+output "name" {
+  description = "Cluster name"
+  value       = "${module.elasticsearch_cluster.name}"
+}
 
 //output "elasticsearch_stateful_set_name" {
 //  desscription = "Elasticsearch stateful set name"
