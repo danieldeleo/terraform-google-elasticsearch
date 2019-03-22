@@ -116,10 +116,14 @@ resource "null_resource" "update_cluster_allow_cloud_shell" {
   }
   provisioner "local-exec" {
     command = <<EOF
-      gcloud container clusters update ${var.cluster_name} \
-    --enable-master-authorized-networks \
-    --zone=${var.zones[0]} \
-    --master-authorized-networks=${lookup(var.master_authorized_cidr_blocks[count.index],"cidr_block")}
+
+    gcloud container clusters update ${var.cluster_name} \
+        --enable-master-authorized-networks \
+        --zone=${var.zones[0]} \
+        --master-authorized-networks=${lookup(var.master_authorized_cidr_blocks[count.index],"cidr_block")}
+
+    gcloud container clusters get-credentials ${module.elasticsearch_cluster.name} \
+        --zone=${var.zones[0]}
     EOF
   }
 }
