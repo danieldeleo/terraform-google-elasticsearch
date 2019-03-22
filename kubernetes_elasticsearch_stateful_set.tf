@@ -17,10 +17,10 @@
 
 resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
   metadata {
-    name = "${var.release_name}-elasticsearch"
+    name = "${module.elasticsearch_private_cluster.name}-elasticsearch"
 
     labels {
-      "app.kubernetes.io/name"      = "${var.release_name}"
+      "app.kubernetes.io/name"      = "${module.elasticsearch_private_cluster.name}"
       "app.kubernetes.io/component" = "elasticsearch-server"
     }
   }
@@ -28,12 +28,12 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
   spec {
     selector {
       match_labels {
-        "app.kubernetes.io/name"      = "${var.release_name}"
+        "app.kubernetes.io/name"      = "${module.elasticsearch_private_cluster.name}"
         "app.kubernetes.io/component" = "elasticsearch-server"
       }
     }
 
-    service_name = "${var.release_name}-elasticsearch-svc"
+    service_name = "${module.elasticsearch_private_cluster.name}-elasticsearch-svc"
     replicas     = "${var.elasticsearch_num_replicas}"
 
     update_strategy {
@@ -43,7 +43,7 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
     template {
       metadata {
         labels {
-          "app.kubernetes.io/name"      = "${var.release_name}"
+          "app.kubernetes.io/name"      = "${module.elasticsearch_private_cluster.name}"
           "app.kubernetes.io/component" = "elasticsearch-server"
         }
       }
@@ -84,12 +84,12 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
 
           env {
             name  = "CLUSTER_NAME"
-            value = "${module.elasticsearch_cluster.name}"
+            value = "${module.elasticsearch_private_cluster.name}"
           }
 
           env {
             name  = "DISCOVERY_SERVICE"
-            value = "${var.release_name}-elasticsearch-svc"
+            value = "${module.elasticsearch_private_cluster.name}-elasticsearch-svc"
           }
 
           env {
@@ -120,7 +120,7 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
           }
 
           volume_mount {
-            name       = "${var.release_name}-elasticsearch-pvc"
+            name       = "${module.elasticsearch_private_cluster.name}-elasticsearch-pvc"
             mount_path = "/usr/share/elasticsearch/data"
           }
 
@@ -156,7 +156,7 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
           name = "configmap"
 
           config_map {
-            name         = "${var.release_name}-configmap"
+            name         = "${module.elasticsearch_private_cluster.name}-configmap"
             default_mode = 420
           }
         }
@@ -165,10 +165,10 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
 
     volume_claim_template {
       metadata {
-        name = "${var.release_name}-elasticsearch-pvc"
+        name = "${module.elasticsearch_private_cluster.name}-elasticsearch-pvc"
 
         labels {
-          "app.kubernetes.io/name"      = "${var.release_name}"
+          "app.kubernetes.io/name"      = "${module.elasticsearch_private_cluster.name}"
           "app.kubernetes.io/component" = "elasticsearch-server"
         }
       }
