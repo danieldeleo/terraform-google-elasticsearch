@@ -333,6 +333,7 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
 resource "null_resource" "get_cluster_credentials" {
   provisioner "local-exec" {
     command = <<EOF
+        printf "Node pools: %s" ${module.elasticsearch_cluster.node_pools_names[0]}
         bash ./scripts/wait_for_cluster.sh ${var.project_id} ${var.cluster_name}
         gcloud container clusters get-credentials ${module.elasticsearch_cluster.name} \
             --zone=${var.zones[0]} && \
