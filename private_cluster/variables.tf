@@ -80,22 +80,4 @@ variable "compute_engine_service_account" {
   description = "Service account to associate to the nodes in the cluster"
 }
 
-variable "release_name" {
-  description = "The release name"
-  default     = "elasticsearch-v6"
-}
 
-variable "elasticsearch_num_replicas" {
-  description = "The number of Elasticsearch node replicas"
-  default     = "2"
-}
-
-variable "elasticsearch_init_image" {
-  description = "Image on which Elasticsearch will run"
-  default     = "marketplace.gcr.io/google/elasticsearch/ubuntu16_04:6.3"
-}
-
-variable "elasticsearch_image" {
-  description = "Elasticsearch image"
-  default     = "marketplace.gcr.io/google/elasticsearch:6.3"
-}
