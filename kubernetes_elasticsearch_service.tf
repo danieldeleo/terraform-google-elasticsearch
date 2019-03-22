@@ -17,10 +17,10 @@
 
 resource "kubernetes_service" "elasticsearch_service" {
   metadata {
-    name = "${module.elasticsearch_private_cluster.name}-elasticsearch-svc"
+    name = "${module.private_cluster.name}-elasticsearch-svc"
 
     labels {
-      "app.kubernetes.io/name"      = "${module.elasticsearch_private_cluster.name}"
+      "app.kubernetes.io/name"      = "${module.private_cluster.name}"
       "app.kubernetes.io/component" = "elasticsearch-server"
     }
 
@@ -41,7 +41,7 @@ resource "kubernetes_service" "elasticsearch_service" {
     }
 
     selector {
-      "app.kubernetes.io/name"      = "${module.elasticsearch_private_cluster.name}"
+      "app.kubernetes.io/name"      = "${module.private_cluster.name}"
       "app.kubernetes.io/component" = "elasticsearch-server"
     }
 

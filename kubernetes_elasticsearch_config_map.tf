@@ -17,10 +17,10 @@
 
 resource "kubernetes_config_map" "elasticsearch_config_map" {
   metadata {
-    name = "${module.elasticsearch_private_cluster.name}-configmap"
+    name = "${module.private_cluster.name}-configmap"
 
     labels {
-      "app.kubernetes.io/name"      = "${module.elasticsearch_private_cluster.name}"
+      "app.kubernetes.io/name"      = "${module.private_cluster.name}"
       "app.kubernetes.io/component" = "elasticsearch-server"
     }
   }

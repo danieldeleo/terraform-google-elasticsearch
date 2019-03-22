@@ -16,7 +16,7 @@
 
 output "name" {
   description = "Cluster name"
-  value       = "${module.elasticsearch_private_cluster.name}"
+  value       = "${module.private_cluster.name}"
 }
 
 //output "elasticsearch_stateful_set_name" {
