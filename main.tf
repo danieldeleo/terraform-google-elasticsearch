@@ -96,7 +96,7 @@ resource "null_resource" "get_cluster_credentials" {
 resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" {
   provisioner "local-exec" {
     command = <<EOF
-        printf "Node pools: %s" ${module.elasticsearch_cluster.node_pools_names[0]}
+        printf "Node pools: %s\n" ${module.elasticsearch_cluster.node_pools_names[0]}
         bash ./scripts/wait_for_cluster.sh ${var.project_id} ${var.cluster_name}
         gcloud container clusters update ${module.elasticsearch_cluster.name} \
         --enable-master-authorized-networks \
