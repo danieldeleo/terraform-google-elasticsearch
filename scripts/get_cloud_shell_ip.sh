@@ -15,7 +15,7 @@
 # limitations under the License.
 
 if [ ${DEVSHELL_IP_ADDRESS} ] ; then
-  printf '[{
+  printf 'master_authorized_cidr_blocks=[{
     cidr_block = "%s/32"
     display_name = "Temporary cloud shell access for setting up elasticsearch"
   }]' $DEVSHELL_IP_ADDRESS
