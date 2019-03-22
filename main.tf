@@ -53,6 +53,7 @@ module "elasticsearch_cluster" {
     cidr_blocks = "${var.master_authorized_cidr_blocks}"
   }]
 
+  remove_default_node_pool = "true"
   node_pools = [
     {
       name               = "default-node-pool"
@@ -70,6 +71,7 @@ module "elasticsearch_cluster" {
 
     },
   ]
+
   node_pools_metadata = {
     all = {}
     default-node-pool = {
@@ -117,7 +119,7 @@ resource "null_resource" "update_cluster_allow_cloud_shell" {
   provisioner "local-exec" {
     command = <<EOF
 
-    gcloud container clusters update ${var.cluster_name} \
+    gcloud container clusters update ${module.elasticsearch_cluster.name} \
         --enable-master-authorized-networks \
         --zone=${var.zones[0]} \
         --master-authorized-networks=${lookup(var.master_authorized_cidr_blocks[count.index],"cidr_block")}
