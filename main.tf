@@ -71,6 +71,7 @@ module "elasticsearch_cluster" {
     },
   ]
   node_pools_metadata = {
+    all = {}
     default-node-pool = {
       disable-legacy-endpoints = true
     }
