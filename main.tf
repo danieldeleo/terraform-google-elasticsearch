@@ -112,11 +112,10 @@ resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" 
 resource "null_resource" "update_cluster_allow_cloud_shell" {
   provisioner "local-exec" {
     command = <<EOF
-      force_change="${var.master_authorized_cidr_blocks}";
       gcloud container clusters update ${var.cluster_name} \
     --enable-master-authorized-networks \
     --zone=${var.zones[0]} \
-    --master-authorized-networks=$${DEVSHELL_IP_ADDRESS}/32
+    --master-authorized-networks=${lookup(var.master_authorized_cidr_blocks[0], "cidr_block")}
     EOF
   }
 }
