@@ -15,7 +15,10 @@
 # limitations under the License.
 
 if [ $DEVSHELL_IP_ADDRESS ] ; then
-  printf '[{cidr_block = "%s/32" display_name = "Temporary cloud shell access for setting up elasticsearch"}]' $DEVSHELL_IP_ADDRESS
+  printf '[{
+    cidr_block = "%s/32"
+    display_name = "Temporary cloud shell access for setting up elasticsearch"
+  }]' $DEVSHELL_IP_ADDRESS
 else
   printf '[]'
 fi
