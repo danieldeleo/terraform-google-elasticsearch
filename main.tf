@@ -19,59 +19,53 @@ provider "google-beta" {
 }
 
 resource "google_compute_subnetwork" "elasticsearch_subnetwork" {
-  name = "${var.subnetwork}"
-  ip_cidr_range = "${var.subnetwork_ip_cidr_range}"
-  region = "${var.region}"
+  name                     = "${var.subnetwork}"
+  ip_cidr_range            = "${var.subnetwork_ip_cidr_range}"
+  region                   = "${var.region}"
   private_ip_google_access = "true"
-  enable_flow_logs = "true"
-  network = "${var.network}"
-  project = "${var.project_id}"
+  enable_flow_logs         = "true"
+  network                  = "${var.network}"
+  project                  = "${var.project_id}"
 
   secondary_ip_range = "${var.secondary_ranges}"
 }
 
 module "elasticsearch_cluster" {
-  source = "github.com/terraform-google-modules/terraform-google-kubernetes-engine/modules/private-cluster/"
-  project_id = "${var.project_id}"
-  name = "${var.cluster_name}"
-  regional = "${var.regional}"
-  region = "${var.region}"
-  zones = "${var.zones}"
-  network = "${var.network}"
-  subnetwork = "${google_compute_subnetwork.elasticsearch_subnetwork.name}"
-  ip_range_pods = "${lookup(google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range[0], "range_name")}"
-  ip_range_services = "${lookup(google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range[1], "range_name")}"
-  service_account = "${var.compute_engine_service_account}"
-  enable_private_endpoint = false
-  enable_private_nodes = true
-  network_policy = true
+  source                     = "github.com/terraform-google-modules/terraform-google-kubernetes-engine/modules/private-cluster/"
+  project_id                 = "${var.project_id}"
+  name                       = "${var.cluster_name}"
+  regional                   = "${var.regional}"
+  region                     = "${var.region}"
+  zones                      = "${var.zones}"
+  network                    = "${var.network}"
+  subnetwork                 = "${google_compute_subnetwork.elasticsearch_subnetwork.name}"
+  ip_range_pods              = "${lookup(google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range[0], "range_name")}"
+  ip_range_services          = "${lookup(google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range[1], "range_name")}"
+  service_account            = "${var.compute_engine_service_account}"
+  enable_private_endpoint    = false
+  enable_private_nodes       = true
+  network_policy             = true
   horizontal_pod_autoscaling = true
 
   master_ipv4_cidr_block = "172.16.0.0/28"
 
-  master_authorized_networks_config = [
-    {
-      cidr_blocks = [
-        {
-          cidr_block = "${data.external.get_cloud_shell_ip.result.ip}/32"
-          display_name = "Temporary cloud shell access for setting up elasticsearch"
-        },
-      ]
-    }]
+  master_authorized_networks_config = [{
+    cidr_blocks = "${var.master_authorized_cidr_blocks}"
+  }]
 
   node_pools = [
     {
-      name = "default-node-pool"
-      machine_type = "n1-standard-2"
-      min_count = 0
-      max_count = 100
-      disk_size_gb = 100
-      disk_type = "pd-standard"
-      image_type = "COS"
-      auto_repair = true
-      auto_upgrade = true
-      service_account = "${var.compute_engine_service_account}"
-      preemptible = false
+      name               = "default-node-pool"
+      machine_type       = "n1-standard-2"
+      min_count          = 0
+      max_count          = 100
+      disk_size_gb       = 100
+      disk_type          = "pd-standard"
+      image_type         = "COS"
+      auto_repair        = true
+      auto_upgrade       = true
+      service_account    = "${var.compute_engine_service_account}"
+      preemptible        = false
       initial_node_count = 3
     },
   ]
@@ -82,7 +76,7 @@ resource "kubernetes_config_map" "elasticsearch_config" {
     name = "${var.release_name}-configmap"
 
     labels {
-      "app.kubernetes.io/name" = "${var.release_name}"
+      "app.kubernetes.io/name"      = "${var.release_name}"
       "app.kubernetes.io/component" = "elasticsearch-server"
     }
   }
@@ -115,7 +109,8 @@ resource "kubernetes_config_map" "elasticsearch_config" {
   }
 
   depends_on = [
-    "null_resource.get_cluster_credentials"]
+    "null_resource.get_cluster_credentials",
+  ]
 }
 
 resource "kubernetes_service" "elasticsearch_service" {
@@ -123,7 +118,7 @@ resource "kubernetes_service" "elasticsearch_service" {
     name = "${var.release_name}-elasticsearch-svc"
 
     labels {
-      "app.kubernetes.io/name" = "${var.release_name}"
+      "app.kubernetes.io/name"      = "${var.release_name}"
       "app.kubernetes.io/component" = "elasticsearch-server"
     }
 
@@ -144,7 +139,7 @@ resource "kubernetes_service" "elasticsearch_service" {
     }
 
     selector {
-      "app.kubernetes.io/name" = "${var.release_name}"
+      "app.kubernetes.io/name"      = "${var.release_name}"
       "app.kubernetes.io/component" = "elasticsearch-server"
     }
 
@@ -152,7 +147,8 @@ resource "kubernetes_service" "elasticsearch_service" {
   }
 
   depends_on = [
-    "null_resource.get_cluster_credentials"]
+    "null_resource.get_cluster_credentials",
+  ]
 }
 
 resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
@@ -160,7 +156,7 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
     name = "${var.release_name}-elasticsearch"
 
     labels {
-      "app.kubernetes.io/name" = "${var.release_name}"
+      "app.kubernetes.io/name"      = "${var.release_name}"
       "app.kubernetes.io/component" = "elasticsearch-server"
     }
   }
@@ -168,13 +164,13 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
   spec {
     selector {
       match_labels {
-        "app.kubernetes.io/name" = "${var.release_name}"
+        "app.kubernetes.io/name"      = "${var.release_name}"
         "app.kubernetes.io/component" = "elasticsearch-server"
       }
     }
 
     service_name = "${var.release_name}-elasticsearch-svc"
-    replicas = "${var.elasticsearch_num_replicas}"
+    replicas     = "${var.elasticsearch_num_replicas}"
 
     update_strategy {
       type = "OnDelete"
@@ -183,7 +179,7 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
     template {
       metadata {
         labels {
-          "app.kubernetes.io/name" = "${var.release_name}"
+          "app.kubernetes.io/name"      = "${var.release_name}"
           "app.kubernetes.io/component" = "elasticsearch-server"
         }
       }
@@ -192,13 +188,15 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
         termination_grace_period_seconds = 180
 
         init_container {
-          name = "set-max-map-count"
-          image = "${var.elasticsearch_init_image}"
+          name              = "set-max-map-count"
+          image             = "${var.elasticsearch_init_image}"
           image_pull_policy = "IfNotPresent"
+
           command = [
             "/bin/bash",
             "-c",
-            "if [[ \"$(sysctl vm.max_map_count --values)\" -lt 262144 ]]; then sysctl -w vm.max_map_count=262144; fi"]
+            "if [[ \"$(sysctl vm.max_map_count --values)\" -lt 262144 ]]; then sysctl -w vm.max_map_count=262144; fi",
+          ]
 
           security_context {
             privileged = true
@@ -206,8 +204,8 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
         }
 
         container {
-          name = "elasticsearch"
-          image = "${var.elasticsearch_image}"
+          name              = "elasticsearch"
+          image             = "${var.elasticsearch_image}"
           image_pull_policy = "Always"
 
           env {
@@ -221,44 +219,44 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
           }
 
           env {
-            name = "CLUSTER_NAME"
+            name  = "CLUSTER_NAME"
             value = "${module.elasticsearch_cluster.name}"
           }
 
           env {
-            name = "DISCOVERY_SERVICE"
+            name  = "DISCOVERY_SERVICE"
             value = "${var.release_name}-elasticsearch-svc"
           }
 
           env {
-            name = "BACKUP_REPO_PATH"
+            name  = "BACKUP_REPO_PATH"
             value = ""
           }
 
           port {
-            name = "http"
+            name           = "http"
             container_port = 9200
           }
 
           port {
-            name = "tcp-transport"
+            name           = "tcp-transport"
             container_port = 9300
           }
 
           volume_mount {
-            name = "configmap"
+            name       = "configmap"
             mount_path = "/etc/elasticsearch/elasticsearch.yml"
-            sub_path = "elasticsearch.yml"
+            sub_path   = "elasticsearch.yml"
           }
 
           volume_mount {
-            name = "configmap"
+            name       = "configmap"
             mount_path = "/etc/elasticsearch/log4j2.properties"
-            sub_path = "log4j2.properties"
+            sub_path   = "log4j2.properties"
           }
 
           volume_mount {
-            name = "${var.release_name}-elasticsearch-pvc"
+            name       = "${var.release_name}-elasticsearch-pvc"
             mount_path = "/usr/share/elasticsearch/data"
           }
 
@@ -276,7 +274,8 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
               command = [
                 "/usr/bin/pgrep",
                 "-x",
-                "java"]
+                "java",
+              ]
             }
 
             initial_delay_seconds = 5
@@ -293,7 +292,7 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
           name = "configmap"
 
           config_map {
-            name = "${var.release_name}-configmap"
+            name         = "${var.release_name}-configmap"
             default_mode = 420
           }
         }
@@ -305,14 +304,16 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
         name = "${var.release_name}-elasticsearch-pvc"
 
         labels {
-          "app.kubernetes.io/name" = "${var.release_name}"
+          "app.kubernetes.io/name"      = "${var.release_name}"
           "app.kubernetes.io/component" = "elasticsearch-server"
         }
       }
 
       spec {
         access_modes = [
-          "ReadWriteOnce"]
+          "ReadWriteOnce",
+        ]
+
         storage_class_name = "standard"
 
         resources {
@@ -325,7 +326,8 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
   }
 
   depends_on = [
-    "null_resource.get_cluster_credentials"]
+    "null_resource.get_cluster_credentials",
+  ]
 }
 
 resource "null_resource" "get_cluster_credentials" {
@@ -356,12 +358,6 @@ resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" 
     "kubernetes_service.elasticsearch_service",
     "kubernetes_stateful_set.elasticsearch_stateful_set",
   ]
-}
-
-data "external" "get_cloud_shell_ip" {
-  program = [
-    "bash",
-    "./scripts/get_cloud_shell_ip.sh"]
 }
 
 data "google_client_config" "default" {}

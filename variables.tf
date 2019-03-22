@@ -70,6 +70,12 @@ variable "secondary_ranges" {
   ]
 }
 
+variable "master_authorized_cidr_blocks"{
+  description = "Temporary cloud shell access for setting up elasticsearch"
+  type = "list"
+  default = []
+}
+
 variable "compute_engine_service_account" {
   description = "Service account to associate to the nodes in the cluster"
 }

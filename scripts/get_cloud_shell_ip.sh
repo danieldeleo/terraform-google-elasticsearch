@@ -14,4 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-printf '{\"ip\":\"%s\"}' $($DEVSHELL_IP_ADDRESS ? $DEVSHELL_IP_ADDRESS : $(dig +short myip.opendns.com @resolver1.opendns.com))
+if [ $DEVSHELL_IP_ADDRESS ] ; then
+  printf '[{
+    cidr_block = "%s/32"
+    display_name = "Temporary cloud shell access for setting up elasticsearch"
+  }]' $DEVSHELL_IP_ADDRESS
+else
+  printf '[]'
+fi
