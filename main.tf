@@ -67,8 +67,12 @@ module "elasticsearch_private_cluster" {
       service_account    = "${var.compute_engine_service_account}"
       preemptible        = false
       initial_node_count = 3
+
     },
   ]
+  node_pools_metadata = {
+    disable-legacy-endpoints = true
+  }
 }
 
 resource "null_resource" "get_cluster_credentials" {
