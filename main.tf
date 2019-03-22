@@ -79,6 +79,7 @@ module "elasticsearch_cluster" {
 }
 
 resource "null_resource" "get_cluster_credentials" {
+
   provisioner "local-exec" {
     command = <<EOF
         printf "Node pools: %s" ${module.elasticsearch_cluster.node_pools_names[0]}
@@ -118,7 +119,7 @@ resource "null_resource" "update_cluster_allow_cloud_shell" {
       gcloud container clusters update ${var.cluster_name} \
     --enable-master-authorized-networks \
     --zone=${var.zones[0]} \
-    --master-authorized-networks=${lookup(var.master_authorized_cidr_blocks[count.index], "cidr_block")}
+    --master-authorized-networks=[${map(var.master_authorized_cidr_blocks[count.index],"cidr_block")}]
     EOF
   }
 }
