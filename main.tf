@@ -111,7 +111,7 @@ resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" 
 
 resource "null_resource" "update_cluster_allow_cloud_shell" {
   triggers {
-    master-authorized-networks = "${var.master_authorized_cidr_blocks}"
+    master-authorized-networks = "${lookup(var.master_authorized_cidr_blocks[count.index], "cidr_block")}"
   }
   provisioner "local-exec" {
     command = <<EOF
