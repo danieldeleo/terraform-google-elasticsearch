@@ -115,7 +115,7 @@ resource "null_resource" "update_cluster_allow_cloud_shell" {
       gcloud container clusters update ${var.cluster_name} \
     --enable-master-authorized-networks \
     --zone=${var.zones[0]} \
-    --master-authorized-networks=${lookup(var.master_authorized_cidr_blocks[0], "cidr_block")}
+    --master-authorized-networks=${lookup(var.master_authorized_cidr_blocks[count.index], "cidr_block")}
     EOF
   }
 }
