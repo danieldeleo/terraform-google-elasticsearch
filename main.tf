@@ -109,4 +109,15 @@ resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" 
   ]
 }
 
+resource "null_resource" "update_cluster_allow_cloud_shell" {
+  provisioner "local-exec" {
+    command = <<EOF
+      gcloud container clusters update ${var.cluster_name} \
+    --enable-master-authorized-networks \
+    --zone=${var.zones[0]} \
+    --master-authorized-networks=$${DEVSHELL_IP_ADDRESS}/32
+    EOF
+  }
+}
+
 data "google_client_config" "default" {}
