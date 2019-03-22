@@ -84,7 +84,7 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
 
           env {
             name  = "CLUSTER_NAME"
-            value = "${module.elasticsearch_cluster.name}"
+            value = "${module.elasticsearch_private_cluster.name}"
           }
 
           env {
