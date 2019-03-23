@@ -34,7 +34,7 @@ module "elasticsearch_cluster" {
   master_ipv4_cidr_block = "172.16.0.0/28"
 
   master_authorized_networks_config = [{
-    cidr_blocks = "${var.master_authorized_cidr_blocks}"
+    cidr_blocks = []
   }]
 
   remove_default_node_pool = "true"
