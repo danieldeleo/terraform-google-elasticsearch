@@ -45,8 +45,8 @@ module "elasticsearch_cluster" {
   zones                      = "${var.zones}"
   network                    = "${var.network}"
   subnetwork                 = "${data.google_compute_subnetwork.elasticsearch_subnetwork.name}"
-  ip_range_pods              = "${lookup(data.google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range[0], "range_name")}"
-  ip_range_services          = "${lookup(data.google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range[1], "range_name")}"
+  ip_range_pods              = "${data.google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range.0.range_name}"
+  ip_range_services          = "${data.google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range.1.range_name}"
   service_account            = "${var.compute_engine_service_account}"
   enable_private_endpoint    = false
   enable_private_nodes       = true
@@ -101,42 +101,42 @@ resource "null_resource" "get_cluster_credentials" {
     EOF
   }
 }
-
-resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" {
-  provisioner "local-exec" {
-    command = <<EOF
-        printf "Node pools: %s\n" ${module.elasticsearch_cluster.node_pools_names[0]}
-        bash ./scripts/wait_for_cluster.sh ${var.project_id} ${var.cluster_name}
-        gcloud container clusters update ${module.elasticsearch_cluster.name} \
-        --enable-master-authorized-networks \
-        --zone=${var.zones[0]} \
-        --master-authorized-networks=${var.subnetwork_ip_cidr_range}
-    EOF
-  }
-
-  depends_on = [
-    "kubernetes_config_map.elasticsearch_config_map",
-    "kubernetes_service.elasticsearch_service",
-    "kubernetes_stateful_set.elasticsearch_stateful_set",
-  ]
-}
-
-resource "null_resource" "update_cluster_allow_cloud_shell" {
-  triggers {
-    master-authorized-networks = "${lookup(var.master_authorized_cidr_blocks[count.index], "cidr_block")}"
-  }
-  provisioner "local-exec" {
-    command = <<EOF
-
-    gcloud container clusters update ${module.elasticsearch_cluster.name} \
-        --enable-master-authorized-networks \
-        --zone=${var.zones[0]} \
-        --master-authorized-networks=${lookup(var.master_authorized_cidr_blocks[count.index],"cidr_block")}
-
-    gcloud container clusters get-credentials ${module.elasticsearch_cluster.name} \
-        --zone=${var.zones[0]}
-    EOF
-  }
-}
+//
+//resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" {
+//  provisioner "local-exec" {
+//    command = <<EOF
+//        printf "Node pools: %s\n" ${module.elasticsearch_cluster.node_pools_names[0]}
+//        bash ./scripts/wait_for_cluster.sh ${var.project_id} ${var.cluster_name}
+//        gcloud container clusters update ${module.elasticsearch_cluster.name} \
+//        --enable-master-authorized-networks \
+//        --zone=${var.zones[0]} \
+//        --master-authorized-networks=${var.subnetwork_ip_cidr_range}
+//    EOF
+//  }
+//
+//  depends_on = [
+//    "kubernetes_config_map.elasticsearch_config_map",
+//    "kubernetes_service.elasticsearch_service",
+//    "kubernetes_stateful_set.elasticsearch_stateful_set",
+//  ]
+//}
+//
+//resource "null_resource" "update_cluster_allow_cloud_shell" {
+//  triggers {
+//    master-authorized-networks = "${lookup(var.master_authorized_cidr_blocks[count.index], "cidr_block")}"
+//  }
+//  provisioner "local-exec" {
+//    command = <<EOF
+//
+//    gcloud container clusters update ${module.elasticsearch_cluster.name} \
+//        --enable-master-authorized-networks \
+//        --zone=${var.zones[0]} \
+//        --master-authorized-networks=${lookup(var.master_authorized_cidr_blocks[count.index],"cidr_block")}
+//
+//    gcloud container clusters get-credentials ${module.elasticsearch_cluster.name} \
+//        --zone=${var.zones[0]}
+//    EOF
+//  }
+//}
 
 data "google_client_config" "default" {}
