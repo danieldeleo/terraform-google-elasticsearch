@@ -53,6 +53,6 @@ resource "kubernetes_config_map" "elasticsearch_config_map" {
   }
 
   depends_on = [
-    "null_resource.get_cluster_credentials",
+    "null_resource.cloudshell_master_access",
   ]
 }
