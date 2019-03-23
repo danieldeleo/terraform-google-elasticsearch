@@ -48,7 +48,7 @@ module "elasticsearch_cluster" {
   ip_range_pods              = "${data.google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range.0.range_name}"
   ip_range_services          = "${data.google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range.1.range_name}"
   service_account            = "${var.compute_engine_service_account}"
-  enable_private_endpoint    = false
+  enable_private_endpoint    = true
   enable_private_nodes       = true
   network_policy             = true
   horizontal_pod_autoscaling = true
