@@ -18,7 +18,6 @@ provider "google-beta" {}
 
 resource "null_resource" "regain_cluster_credentials" {
   provisioner "local-exec" {
-    when = "destroy"
     command = <<EOF
 
     gcloud container clusters update ${var.cluster_name} \
