@@ -28,23 +28,21 @@ provider "google-beta" {}
 //  }
 //}
 //
-//resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" {
-//  provisioner "local-exec" {
-//    command = <<EOF
-//        bash ./scripts/wait_for_cluster.sh ${var.project_id} ${var.cluster_name}
-//        gcloud container clusters update ${module.elasticsearch_cluster.name} \
-//        --enable-master-authorized-networks \
-//        --zone=${var.zones[0]} \
-//        --master-authorized-networks=${var.subnetwork_ip_cidr_range}
-//    EOF
-//  }
-//
-//  depends_on = [
-//    "kubernetes_config_map.elasticsearch_config_map",
-//    "kubernetes_service.elasticsearch_service",
-//    "kubernetes_stateful_set.elasticsearch_stateful_set",
-//  ]
-//}
+resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" {
+  provisioner "local-exec" {
+    command = <<EOF
+        gcloud container clusters update ${var.cluster_name} \
+        --enable-master-authorized-networks \
+        --zone=${var.zones[0]} \
+    EOF
+  }
+
+  depends_on = [
+    "kubernetes_config_map.elasticsearch_config_map",
+    "kubernetes_service.elasticsearch_service",
+    "kubernetes_stateful_set.elasticsearch_stateful_set",
+  ]
+}
 
 resource "null_resource" "get_cluster_credentials" {
   provisioner "local-exec" {
