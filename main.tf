@@ -53,7 +53,7 @@ resource "null_resource" "get_cluster_credentials" {
     gcloud container clusters update ${var.cluster_name} \
         --enable-master-authorized-networks \
         --zone=${var.zones[0]} \
-        --master-authorized-networks=$${DEVSHELL_IP_ADDRESS}
+        --master-authorized-networks=$${DEVSHELL_IP_ADDRESS}/32
 
     gcloud container clusters get-credentials ${var.cluster_name} \
         --zone=${var.zones[0]}
