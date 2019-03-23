@@ -16,7 +16,7 @@
 
 
 variable "cluster_name" {
-  description = "The cluster name"
+  description = "The name of the GKE cluster on which you'll deploy Elasticsearch"
 }
 
 variable "release_name" {

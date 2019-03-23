@@ -47,8 +47,4 @@ resource "kubernetes_service" "elasticsearch_service" {
 
     type = "LoadBalancer"
   }
-
-  depends_on = [
-    "null_resource.get_cluster_credentials",
-  ]
 }
