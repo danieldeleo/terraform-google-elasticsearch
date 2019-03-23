@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-cd private_cluster && \
+cd examples/private_cluster && \
 terraform init && \
-terraform apply --auto-approve -var-file=../terraform.tfvars
+terraform apply --auto-approve -var-file=../../terraform.tfvars
 
 terraform init && \
 terraform apply --auto-approve

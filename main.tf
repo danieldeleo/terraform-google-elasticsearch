@@ -19,6 +19,9 @@ provider "google-beta" {}
 resource "null_resource" "get_cluster_credentials" {
   provisioner "local-exec" {
     command = <<EOF
+    if [ !$${DEVSHELL_IP_ADDRESS} ] ; then
+      DEVSHELL_IP_ADDRESS=$$(dig +short myip.opendns.com @resolver1.opendns.com)
+    fi
 
     gcloud container clusters update ${var.cluster_name} \
         --enable-master-authorized-networks \
@@ -50,6 +53,9 @@ resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" 
 resource "null_resource" "cloudshell_master_access" {
   provisioner "local-exec" {
     command = <<EOF
+    if [ !$${DEVSHELL_IP_ADDRESS} ] ; then
+      DEVSHELL_IP_ADDRESS=$$(dig +short myip.opendns.com @resolver1.opendns.com)
+    fi
 
     gcloud container clusters update ${var.cluster_name} \
         --enable-master-authorized-networks \
