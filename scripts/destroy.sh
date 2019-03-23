@@ -3,5 +3,5 @@
 terraform init && terraform destroy -auto-approve
 
 cd examples/private_cluster && \
-terraform init && terraform destroy -auto-approve
+terraform init && terraform destroy -auto-approve -var-file=../terraform.tfvars
 
