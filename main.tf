@@ -30,6 +30,11 @@ resource "null_resource" "regain_cluster_credentials" {
         --zone=${var.zones[0]}
     EOF
   }
+  depends_on = [
+    "kubernetes_config_map.elasticsearch_config_map",
+    "kubernetes_service.elasticsearch_service",
+    "kubernetes_stateful_set.elasticsearch_stateful_set",
+  ]
 }
 
 resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" {
