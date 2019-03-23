@@ -19,6 +19,12 @@ variable "cluster_name" {
   description = "The name of the GKE cluster on which you'll deploy Elasticsearch"
 }
 
+variable "zones" {
+  type        = "list"
+  description = "The zone in which cluster is hosted (required if is a zonal cluster)"
+  default     = ["us-central1-a"]
+}
+
 variable "release_name" {
   description = "The release name"
   default     = "elasticsearch-v6"

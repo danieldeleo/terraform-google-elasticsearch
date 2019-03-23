@@ -188,4 +188,8 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
       }
     }
   }
+
+  depends_on = [
+    "null_resource.get_cluster_credentials",
+  ]
 }

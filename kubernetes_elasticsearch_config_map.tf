@@ -51,4 +51,8 @@ resource "kubernetes_config_map" "elasticsearch_config_map" {
     rootLogger.appenderRef.console.ref = console
     EOF
   }
+
+  depends_on = [
+    "null_resource.get_cluster_credentials",
+  ]
 }

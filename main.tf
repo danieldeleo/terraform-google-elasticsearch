@@ -45,23 +45,20 @@ provider "google-beta" {}
 //    "kubernetes_stateful_set.elasticsearch_stateful_set",
 //  ]
 //}
-//
-//resource "null_resource" "update_cluster_allow_cloud_shell" {
-//  triggers {
-//    master-authorized-networks = "${lookup(var.master_authorized_cidr_blocks[count.index], "cidr_block")}"
-//  }
-//  provisioner "local-exec" {
-//    command = <<EOF
-//
-//    gcloud container clusters update ${module.elasticsearch_cluster.name} \
-//        --enable-master-authorized-networks \
-//        --zone=${var.zones[0]} \
-//        --master-authorized-networks=${lookup(var.master_authorized_cidr_blocks[count.index],"cidr_block")}
-//
-//    gcloud container clusters get-credentials ${module.elasticsearch_cluster.name} \
-//        --zone=${var.zones[0]}
-//    EOF
-//  }
-//}
+
+resource "null_resource" "get_cluster_credentials" {
+  provisioner "local-exec" {
+    command = <<EOF
+
+    gcloud container clusters update ${var.cluster_name} \
+        --enable-master-authorized-networks \
+        --zone=${var.zones[0]} \
+        --master-authorized-networks=$${DEVSHELL_IP_ADDRESS}
+
+    gcloud container clusters get-credentials ${var.cluster_name} \
+        --zone=${var.zones[0]}
+    EOF
+  }
+}
 
 data "google_client_config" "default" {}
