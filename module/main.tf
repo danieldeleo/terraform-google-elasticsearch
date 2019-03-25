@@ -95,8 +95,6 @@ resource "null_resource" "get_cluster_credentials" {
     command = <<EOF
         printf "Node pools: %s" ${module.elasticsearch_cluster.node_pools_names[0]}
         bash ./scripts/wait_for_cluster.sh ${var.project_id} ${var.cluster_name}
-        gcloud container clusters get-credentials ${module.elasticsearch_cluster.name} \
-            --zone=${var.zones[0]} --internal-ip && \
         kubectl apply -f "https://raw.githubusercontent.com/GoogleCloudPlatform/marketplace-k8s-app-tools/master/crd/app-crd.yaml"
     EOF
   }
