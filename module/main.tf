@@ -18,6 +18,11 @@ provider "google-beta" {
   region = "${var.region}"
 }
 
+provider "kubernetes" {
+  host = "${module.elasticsearch_cluster.endpoint}"
+  cluster_ca_certificate = "${module.elasticsearch_cluster.ca_certificate}"
+}
+
 data "google_compute_subnetwork" "elasticsearch_subnetwork" {
   name                     = "${var.subnetwork}"
   project                  = "${var.project_id}"
