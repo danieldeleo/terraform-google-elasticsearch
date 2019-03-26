@@ -104,11 +104,11 @@ resource "null_resource" "wait_for_cluster" {
   }
 }
 
+//        gcloud container clusters get-credentials ${module.elasticsearch_cluster.name} \
+//            --zone=${var.zones[0]} --internal-ip
 resource "null_resource" "get_cluster_credentials" {
   provisioner "local-exec" {
     command = <<EOF
-        gcloud container clusters get-credentials ${module.elasticsearch_cluster.name} \
-            --zone=${var.zones[0]} --internal-ip
         kubectl apply -f "https://raw.githubusercontent.com/GoogleCloudPlatform/marketplace-k8s-app-tools/master/crd/app-crd.yaml"
     EOF
   }
