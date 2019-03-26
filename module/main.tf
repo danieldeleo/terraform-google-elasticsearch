@@ -20,7 +20,7 @@ provider "google-beta" {
 
 provider "kubernetes" {
   host = "${module.elasticsearch_cluster.endpoint}"
-  cluster_ca_certificate = "${module.elasticsearch_cluster.ca_certificate}"
+  cluster_ca_certificate = "${base64decode(module.elasticsearch_cluster.ca_certificate)}"
   token = "${data.google_client_config.default.access_token}"
 }
 
