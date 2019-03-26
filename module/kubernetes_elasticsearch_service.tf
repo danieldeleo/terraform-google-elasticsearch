@@ -49,6 +49,6 @@ resource "kubernetes_service" "elasticsearch_service" {
   }
 
   depends_on = [
-    "null_resource.get_cluster_credentials",
+    "null_resource.wait_for_cluster",
   ]
 }

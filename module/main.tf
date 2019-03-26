@@ -89,7 +89,7 @@ module "elasticsearch_cluster" {
   }
 }
 
-resource "null_resource" "get_cluster_credentials" {
+resource "null_resource" "wait_for_cluster" {
 
   provisioner "local-exec" {
     command = <<EOF
@@ -99,7 +99,7 @@ resource "null_resource" "get_cluster_credentials" {
   }
 }
 
-resource "null_resource" "add_kubernetes_application_resource" {
+resource "null_resource" "get_cluster_credentials" {
   provisioner "local-exec" {
     command = <<EOF
         gcloud container clusters get-credentials ${module.elasticsearch_cluster.name} \
@@ -107,7 +107,7 @@ resource "null_resource" "add_kubernetes_application_resource" {
         kubectl apply -f "https://raw.githubusercontent.com/GoogleCloudPlatform/marketplace-k8s-app-tools/master/crd/app-crd.yaml"
     EOF
   }
-  depends_on = ["null_resource.get_cluster_credentials"]
+  depends_on = ["null_resource.wait_for_cluster"]
 }
 
 //
