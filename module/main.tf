@@ -95,10 +95,17 @@ resource "null_resource" "get_cluster_credentials" {
     command = <<EOF
         printf "Node pools: %s" ${module.elasticsearch_cluster.node_pools_names[0]}
         bash ./scripts/wait_for_cluster.sh ${var.project_id} ${var.cluster_name}
-        kubectl apply -f "https://raw.githubusercontent.com/GoogleCloudPlatform/marketplace-k8s-app-tools/master/crd/app-crd.yaml"
     EOF
   }
 }
+
+resource "null_resource" "add_kubernetes_application_resource" {
+  provisioner "local-exec" {
+    command = "kubectl apply -f \"https://raw.githubusercontent.com/GoogleCloudPlatform/marketplace-k8s-app-tools/master/crd/app-crd.yaml\""
+  }
+  depends_on = ["null_resource.get_cluster_credentials"]
+}
+
 //
 //resource "null_resource" "remove_cloud_shell_ip_from_master_authorized_network" {
 //  provisioner "local-exec" {
