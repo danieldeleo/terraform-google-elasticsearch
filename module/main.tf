@@ -95,4 +95,12 @@ module "elasticsearch_cluster" {
   }
 }
 
+resource "null_resource" "wait_for_cluster" {
+  provisioner "local-exec" {
+    command = <<EOF
+        bash ./scripts/wait_for_cluster.sh ${var.project_id} ${module.elasticsearch_cluster.name}
+    EOF
+  }
+}
+
 data "google_client_config" "default" {}
