@@ -101,7 +101,11 @@ resource "null_resource" "get_cluster_credentials" {
 
 resource "null_resource" "add_kubernetes_application_resource" {
   provisioner "local-exec" {
-    command = "kubectl apply -f \"https://raw.githubusercontent.com/GoogleCloudPlatform/marketplace-k8s-app-tools/master/crd/app-crd.yaml\""
+    command = <<EOF
+        gcloud container clusters get-credentials ${module.elasticsearch_cluster.name} \
+            --zone=${var.zones[0]} --internal-ip
+        kubectl apply -f "https://raw.githubusercontent.com/GoogleCloudPlatform/marketplace-k8s-app-tools/master/crd/app-crd.yaml"
+    EOF
   }
   depends_on = ["null_resource.get_cluster_credentials"]
 }
