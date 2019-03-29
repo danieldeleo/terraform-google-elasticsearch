@@ -1,4 +1,5 @@
-provider "google" {}
+provider "google" {
+}
 
 resource "google_compute_subnetwork" "elasticsearch_subnetwork" {
   name                     = "${var.subnetwork}"
@@ -12,12 +13,9 @@ resource "google_compute_subnetwork" "elasticsearch_subnetwork" {
   secondary_ip_range = "${var.secondary_ranges}"
 }
 
-module "startup-script-lib" {
-  source = "git::https://github.com/terraform-google-modules/terraform-google-startup-scripts.git"
-}
-
 module "instance_template" {
   source          = "github.com/terraform-google-modules/terraform-google-vm/modules/instance_template"
+  subnetwork_project = "${var.project_id}"
   subnetwork      = "${var.subnetwork}"
   service_account = {
     email  = "${var.compute_engine_service_account}"
