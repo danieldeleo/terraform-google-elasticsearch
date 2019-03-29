@@ -17,7 +17,7 @@ module "instance_template" {
   source          = "github.com/terraform-google-modules/terraform-google-vm/modules/instance_template"
   subnetwork_project = "${var.project_id}"
   subnetwork      = "${var.subnetwork}"
-  network = "default"
+  source_image_project = "${var.project_id}"
   service_account = {
     email  = "${var.compute_engine_service_account}"
     scopes = ["cloud-platform"]
