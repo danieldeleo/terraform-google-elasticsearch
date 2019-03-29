@@ -19,7 +19,7 @@ module "startup-script-lib" {
 module "instance_template" {
   source          = "github.com/terraform-google-modules/terraform-google-vm/modules/instance_template"
   subnetwork      = "${var.subnetwork}"
-  service_account = "${var.compute_engine_service_account}}"
+  service_account = ["${var.compute_engine_service_account}}"]
 }
 
 resource "google_compute_instance_from_template" "example" {
