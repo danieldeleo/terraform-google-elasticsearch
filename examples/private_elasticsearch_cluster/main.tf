@@ -24,20 +24,24 @@ provider "kubernetes" {
   token = "${data.google_client_config.default.access_token}"
 }
 
-resource "google_compute_subnetwork" "elasticsearch_subnetwork" {
-  name                     = "${var.subnetwork}"
-  ip_cidr_range            = "${var.subnetwork_ip_cidr_range}"
-  region                   = "${var.region}"
-  private_ip_google_access = "true"
-  enable_flow_logs         = "true"
-  network                  = "${var.network}"
-  project                  = "${var.project_id}"
+//resource "google_compute_subnetwork" "elasticsearch_subnetwork" {
+//  name                     = "${var.subnetwork}"
+//  ip_cidr_range            = "${var.subnetwork_ip_cidr_range}"
+//  region                   = "${var.region}"
+//  private_ip_google_access = "true"
+//  enable_flow_logs         = "true"
+//  network                  = "${var.network}"
+//  project                  = "${var.project_id}"
+//
+//  secondary_ip_range = "${var.secondary_ranges}"
+//}
 
-  secondary_ip_range = "${var.secondary_ranges}"
-}
+//data "google_compute_subnetwork" "elasticsearch_subnetwork" {
+//  name = "${google_compute_subnetwork.elasticsearch_subnetwork.name}"
+//}
 
 data "google_compute_subnetwork" "elasticsearch_subnetwork" {
-  name = "${google_compute_subnetwork.elasticsearch_subnetwork.name}"
+  name = "${var.subnetwork}"
 }
 
 module "elasticsearch_cluster" {
@@ -48,7 +52,7 @@ module "elasticsearch_cluster" {
   region                     = "${var.region}"
   zones                      = "${var.zones}"
   network                    = "${var.network}"
-  subnetwork                 = "${google_compute_subnetwork.elasticsearch_subnetwork.name}"
+  subnetwork                 = "${var.subnetwork}"
   ip_range_pods              = "${data.google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range.0.range_name}"
   ip_range_services          = "${data.google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range.1.range_name}"
   service_account            = "${var.compute_engine_service_account}"
