@@ -38,11 +38,13 @@ provider "kubernetes" {
 
 //data "google_compute_subnetwork" "elasticsearch_subnetwork" {
 //  project = "${var.project_id}"
+//  region = "${var.region}"
 //  name = "${google_compute_subnetwork.elasticsearch_subnetwork.name}"
 //}
 
 data "google_compute_subnetwork" "elasticsearch_subnetwork" {
   project = "${var.project_id}"
+  region = "${var.region}"
   name = "${var.subnetwork}"
 }
 
