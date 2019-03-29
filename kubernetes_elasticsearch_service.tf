@@ -47,8 +47,4 @@ resource "kubernetes_service" "elasticsearch_service" {
 
     type = "LoadBalancer"
   }
-
-  depends_on = [
-    "null_resource.wait_for_cluster",
-  ]
 }

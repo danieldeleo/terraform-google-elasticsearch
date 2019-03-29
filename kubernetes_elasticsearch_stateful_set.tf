@@ -84,7 +84,7 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
 
           env {
             name  = "CLUSTER_NAME"
-            value = "${module.elasticsearch_cluster.name}"
+            value = "${var.cluster_name}"
           }
 
           env {
@@ -188,8 +188,4 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
       }
     }
   }
-
-  depends_on = [
-    "null_resource.wait_for_cluster",
-  ]
 }

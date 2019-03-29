@@ -23,63 +23,6 @@ variable "cluster_name" {
   default     = "private-elasticsearch-cluster"
 }
 
-variable "regional" {
-  description = "Whether to create a regional cluster"
-  default     = false
-}
-
-variable "region" {
-  description = "The region to host the cluster in"
-  default     = "us-central1"
-}
-
-variable "zones" {
-  type        = "list"
-  description = "The zone to host the cluster in (required if is a zonal cluster)"
-  default     = ["us-central1-a"]
-}
-
-variable "network" {
-  description = "The VPC network to host the cluster in"
-  default     = "default"
-}
-
-variable "subnetwork" {
-  description = "The name of subnetwork to create and host the cluster in"
-  default     = "elasticsearch-subnet"
-}
-
-variable "subnetwork_ip_cidr_range" {
-  description = "The ip cidr range for the cluster subnet"
-  default     = "10.0.0.0/20"
-}
-
-variable "secondary_ranges" {
-  type        = "list"
-  description = "Two secondary ranges for GKE: one for Pods and one for Services."
-
-  default = [
-    {
-      range_name    = "gke-pods-ip-range"
-      ip_cidr_range = "10.4.0.0/14"
-    },
-    {
-      range_name    = "gke-services-ip-range"
-      ip_cidr_range = "10.0.16.0/20"
-    },
-  ]
-}
-
-variable "master_authorized_cidr_blocks"{
-  description = "Temporary cloud shell access for setting up elasticsearch"
-  type = "list"
-  default = []
-}
-
-variable "compute_engine_service_account" {
-  description = "Service account to associate to the nodes in the cluster"
-}
-
 variable "release_name" {
   description = "The release name"
   default     = "elasticsearch-v6"
