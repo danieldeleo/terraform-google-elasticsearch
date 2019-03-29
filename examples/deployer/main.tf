@@ -17,7 +17,7 @@ resource "google_compute_subnetwork" "elasticsearch_subnetwork" {
 module "instance_template" {
   source          = "github.com/terraform-google-modules/terraform-google-vm/modules/instance_template"
   network = "default"
-  subnetwork      = "${var.subnetwork}"
+  subnetwork      = "${google_compute_subnetwork.elasticsearch_subnetwork.name}"
   service_account = {
     email  = "${var.compute_engine_service_account}"
     scopes = ["cloud-platform"]
