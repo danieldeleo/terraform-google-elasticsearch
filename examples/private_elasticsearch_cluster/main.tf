@@ -96,6 +96,7 @@ module "elasticsearch_cluster" {
 module "kubernetes_elasticsearch" {
   source = "../../"
   project_id = "${var.project_id}"
+  cluster_name = "${module.elasticsearch_cluster.name}"
 }
 
 
