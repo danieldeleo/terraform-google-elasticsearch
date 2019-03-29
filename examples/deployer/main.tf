@@ -1,5 +1,7 @@
 provider "google" {
   project = "${var.project_id}"
+  region = "${var.region}"
+  zone = "${var.zones[0]}"
 }
 
 resource "google_compute_subnetwork" "elasticsearch_subnetwork" {
@@ -25,7 +27,7 @@ module "instance_template" {
 }
 
 resource "google_compute_instance_from_template" "example" {
-  name = "elasticsearch_deployer"
+  name = "elasticsearch-deployer"
 
   source_instance_template = "${module.instance_template.self_link}"
   metadata {
