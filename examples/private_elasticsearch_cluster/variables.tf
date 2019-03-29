@@ -80,10 +80,6 @@ variable "compute_engine_service_account" {
   description = "Service account to associate to the nodes in the cluster"
 }
 
-variable "startup_script" {
-  description = "Script to run terraform deployment"
-}
-
 variable "release_name" {
   description = "The release name"
   default     = "elasticsearch-v6"
