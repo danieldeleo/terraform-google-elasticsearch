@@ -24,7 +24,8 @@ module "instance_template" {
   source_image_family = "debian-9"
   source_image_project = "debian-cloud"
   service_account = {
-    email  = "${data.google_compute_default_service_account.default.email}"
+    // If email is not specified, the default Google Compute Engine service account is used.
+    email = ""
     scopes = ["cloud-platform"]
   }
 }
