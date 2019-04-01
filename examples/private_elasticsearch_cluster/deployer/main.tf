@@ -42,5 +42,6 @@ resource "google_compute_instance_from_template" "example" {
   source_instance_template = "${module.instance_template.self_link}"
   metadata {
     startup-script        = "${file("${path.module}/scripts/setup.sh")}"
+    shutdown-script       = "${file("${path.module}/scripts/destroy.sh")}"
   }
 }

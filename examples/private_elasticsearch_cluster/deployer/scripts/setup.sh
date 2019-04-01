@@ -11,7 +11,7 @@ sudo install terraform /usr/local/bin/ && \
 # Clone repo and create private Elasticsearch cluster
 git clone https://github.com/danieldeleo/terraform-google-elasticsearch.git
 cd terraform-google-elasticsearch/examples/private_elasticsearch_cluster
-/usr/local/bin/terraform init
-/usr/local/bin/terraform apply -auto-approve -var project_id=$(gcloud compute project-info describe --format="value(name)")
+terraform init
+terraform apply -auto-approve -var project_id=$(gcloud compute project-info describe --format="value(name)")
 
 
