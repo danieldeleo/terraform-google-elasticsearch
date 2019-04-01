@@ -70,7 +70,7 @@ module "elasticsearch_cluster" {
       image_type         = "COS"
       auto_repair        = true
       auto_upgrade       = true
-      service_account    = "${data.google_compute_default_service_account.default.email}"
+      service_account    = ""
       preemptible        = false
       initial_node_count = 3
 
