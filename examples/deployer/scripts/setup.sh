@@ -8,8 +8,8 @@ sudo install terraform /usr/local/bin/ && \
 
 sudo apt-get install git jq unzip kubectl -y
 git clone https://github.com/danieldeleo/terraform-google-elasticsearch.git
-cd terraform-google-elasticsearch
-terraform init
-#terraform apply -auto-approve
+cd terraform-google-elasticsearch/examples/private_elasticsearch_cluster
+/usr/local/bin/terraform init
+/usr/local/bin/terraform apply -auto-approve
 
 
