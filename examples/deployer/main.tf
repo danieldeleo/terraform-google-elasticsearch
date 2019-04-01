@@ -16,13 +16,15 @@ resource "google_compute_subnetwork" "elasticsearch_subnetwork" {
   secondary_ip_range = "${var.secondary_ranges}"
 }
 
+data "google_compute_default_service_account" "default" { }
+
 module "instance_template" {
   source          = "github.com/terraform-google-modules/terraform-google-vm/modules/instance_template"
   subnetwork      = "${google_compute_subnetwork.elasticsearch_subnetwork.name}"
   source_image_family = "debian-9"
   source_image_project = "debian-cloud"
   service_account = {
-    email  = "${var.compute_engine_service_account}"
+    email  = "${data.google_compute_default_service_account.default.email}"
     scopes = ["cloud-platform"]
   }
 }

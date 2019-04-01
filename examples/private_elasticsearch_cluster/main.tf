@@ -48,6 +48,8 @@ data "google_compute_subnetwork" "elasticsearch_subnetwork" {
   name = "${var.subnetwork}"
 }
 
+data "google_compute_default_service_account" "default" { }
+
 module "elasticsearch_cluster" {
   source                     = "github.com/terraform-google-modules/terraform-google-kubernetes-engine/modules/private-cluster/"
   project_id                 = "${var.project_id}"
@@ -59,7 +61,7 @@ module "elasticsearch_cluster" {
   subnetwork                 = "${var.subnetwork}"
   ip_range_pods              = "${data.google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range.0.range_name}"
   ip_range_services          = "${data.google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range.1.range_name}"
-  service_account            = "${var.compute_engine_service_account}"
+  service_account            = "${data.google_compute_default_service_account.default.email}"
   enable_private_endpoint    = true
   enable_private_nodes       = true
   network_policy             = true
