@@ -1,1 +1,0 @@
-../../../examples/private_elasticsearch_cluster/variables.tf
