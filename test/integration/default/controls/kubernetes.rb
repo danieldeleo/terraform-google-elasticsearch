@@ -11,13 +11,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-bucket_name = attribute('bucket_name')
-
-control "gcp" do
-  title "Google Cloud configuration"
-
-  describe google_storage_bucket(name: bucket_name) do
-    it { should exist }
-  end
-end

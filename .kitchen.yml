@@ -16,6 +16,7 @@
 driver:
   name: "terraform"
   command_timeout: 1800
+  root_module_directory: test/fixtures/private_elasticsearch_cluster/deployer
 
 provisioner:
   name: "terraform"
@@ -23,24 +24,11 @@ provisioner:
 platforms:
   - name: local
 
+verifier:
+  name: terraform
+  systems:
+    - name: system
+      backend: local
+
 suites:
-  - name: "simple_example"
-    driver:
-      name: "terraform"
-      command_timeout: 1800
-      root_module_directory: test/fixtures/
-    verifier:
-      name: terraform
-      color: false
-      systems:
-        - name: simple_example
-          backend: local
-          controls:
-            - gcloud
-        - name: simple_example
-          backend: gcp
-          shell: true
-          controls:
-            - gcp
-    provisioner:
-      name: terraform
+  - name: "default"

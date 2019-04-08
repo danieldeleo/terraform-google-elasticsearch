@@ -49,6 +49,6 @@ resource "google_compute_instance_from_template" "example" {
 resource "null_resource" "delete_kubernetes_cluster" {
   provisioner "local-exec" {
     when = "destroy"
-    command = "gcloud container clusters delete ${var.cluster_name} --zone=${var.zones[0]}"
+    command = "gcloud container clusters delete ${var.cluster_name} --zone=${var.zones[0]} --project=${var.project_id} --quiet"
   }
 }
