@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 //output "name" {
 //  description = "Cluster name"
 //  value       = "${module.elasticsearch_cluster.name}"
 //}
-
 //output "elasticsearch_stateful_set_name" {
 //  desscription = "Elasticsearch stateful set name"
 //  value = "${kubernetes_stateful_set.elasticsearch_stateful_set.metadata.name}"
 //}
+

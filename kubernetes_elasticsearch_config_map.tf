@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 resource "kubernetes_config_map" "elasticsearch_config_map" {
   metadata {
     name = "${var.release_name}-configmap"

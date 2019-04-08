@@ -19,15 +19,15 @@ provider "google-beta" {
 }
 
 provider "kubernetes" {
-  host = "${module.kubernetes_private_cluster.endpoint}"
+  host                   = "${module.kubernetes_private_cluster.endpoint}"
   cluster_ca_certificate = "${base64decode(module.kubernetes_private_cluster.ca_certificate)}"
-  token = "${data.google_client_config.default.access_token}"
+  token                  = "${data.google_client_config.default.access_token}"
 }
 
 data "google_compute_subnetwork" "elasticsearch_subnetwork" {
   project = "${var.project_id}"
-  region = "${var.region}"
-  name = "${var.subnetwork}"
+  region  = "${var.region}"
+  name    = "${var.subnetwork}"
 }
 
 module "kubernetes_private_cluster" {
@@ -50,13 +50,14 @@ module "kubernetes_private_cluster" {
   master_ipv4_cidr_block = "172.16.0.0/28"
 
   master_authorized_networks_config = [{
-    cidr_blocks =  [{
+    cidr_blocks = [{
       cidr_block   = "${data.google_compute_subnetwork.elasticsearch_subnetwork.ip_cidr_range}"
       display_name = "${data.google_compute_subnetwork.elasticsearch_subnetwork.name}"
     }]
   }]
 
   remove_default_node_pool = "true"
+
   node_pools = [
     {
       name               = "default-node-pool"
@@ -71,12 +72,12 @@ module "kubernetes_private_cluster" {
       service_account    = ""
       preemptible        = false
       initial_node_count = 3
-
     },
   ]
 
   node_pools_metadata = {
     all = {}
+
     default-node-pool = {
       disable-legacy-endpoints = "true"
     }
@@ -84,10 +85,9 @@ module "kubernetes_private_cluster" {
 }
 
 module "kubernetes_elasticsearch_deployment" {
-  source = "../../"
-  project_id = "${var.project_id}"
+  source       = "../../"
+  project_id   = "${var.project_id}"
   cluster_name = "${module.kubernetes_private_cluster.name}"
 }
-
 
 data "google_client_config" "default" {}

@@ -70,8 +70,8 @@ variable "secondary_ranges" {
   ]
 }
 
-variable "master_authorized_cidr_blocks"{
+variable "master_authorized_cidr_blocks" {
   description = "Temporary cloud shell access for setting up elasticsearch"
-  type = "list"
-  default = []
+  type        = "list"
+  default     = []
 }

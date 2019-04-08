@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 resource "kubernetes_service" "elasticsearch_service" {
   metadata {
     name = "${var.release_name}-elasticsearch-svc"

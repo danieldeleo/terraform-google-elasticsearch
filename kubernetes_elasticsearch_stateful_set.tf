@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
   metadata {
     name = "${var.release_name}-elasticsearch"
