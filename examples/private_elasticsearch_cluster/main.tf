@@ -19,8 +19,8 @@ provider "google-beta" {
 }
 
 provider "kubernetes" {
-  host = "${module.elasticsearch_cluster.endpoint}"
-  cluster_ca_certificate = "${base64decode(module.elasticsearch_cluster.ca_certificate)}"
+  host = "${module.kubernetes_private_cluster.endpoint}"
+  cluster_ca_certificate = "${base64decode(module.kubernetes_private_cluster.ca_certificate)}"
   token = "${data.google_client_config.default.access_token}"
 }
 
@@ -30,7 +30,7 @@ data "google_compute_subnetwork" "elasticsearch_subnetwork" {
   name = "${var.subnetwork}"
 }
 
-module "elasticsearch_cluster" {
+module "kubernetes_private_cluster" {
   source                     = "github.com/terraform-google-modules/terraform-google-kubernetes-engine/modules/private-cluster/"
   project_id                 = "${var.project_id}"
   name                       = "${var.cluster_name}"
@@ -83,10 +83,10 @@ module "elasticsearch_cluster" {
   }
 }
 
-module "kubernetes_elasticsearch" {
+module "kubernetes_elasticsearch_deployment" {
   source = "../../"
   project_id = "${var.project_id}"
-  cluster_name = "${module.elasticsearch_cluster.name}"
+  cluster_name = "${module.kubernetes_private_cluster.name}"
 }
 
 

@@ -59,3 +59,8 @@ variable "secondary_ranges" {
     },
   ]
 }
+
+variable "cluster_name" {
+  description = "The name of the kubernetes cluster on which Elasticsearch will deploy"
+  default     = "private-elasticsearch-cluster"
+}

@@ -19,7 +19,7 @@ variable "project_id" {
 }
 
 variable "cluster_name" {
-  description = "A suffix to append to the default cluster name"
+  description = "The name of the kubernetes cluster on which Elasticsearch will deploy"
   default     = "private-elasticsearch-cluster"
 }
 
@@ -74,24 +74,4 @@ variable "master_authorized_cidr_blocks"{
   description = "Temporary cloud shell access for setting up elasticsearch"
   type = "list"
   default = []
-}
-
-variable "release_name" {
-  description = "The release name"
-  default     = "elasticsearch-v6"
-}
-
-variable "elasticsearch_num_replicas" {
-  description = "The number of Elasticsearch node replicas"
-  default     = "2"
-}
-
-variable "elasticsearch_init_image" {
-  description = "Image on which Elasticsearch will run"
-  default     = "marketplace.gcr.io/google/elasticsearch/ubuntu16_04:6.3"
-}
-
-variable "elasticsearch_image" {
-  description = "Elasticsearch image"
-  default     = "marketplace.gcr.io/google/elasticsearch:6.3"
 }

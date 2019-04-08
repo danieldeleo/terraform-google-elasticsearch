@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-cluster_name = "private-elasticsearch-cluster"
-
 region = "us-central1"
 
 zones = ["us-central1-a"]
@@ -23,3 +21,26 @@ zones = ["us-central1-a"]
 network = "default"
 
 subnetwork = "elasticsearch-subnet"
+
+subnetwork_ip_cidr_range = "10.0.0.0/20"
+
+secondary_ranges =  [
+  {
+    range_name = "gke-pods-ip-range"
+    ip_cidr_range = "10.4.0.0/14"
+  },
+  {
+    range_name = "gke-services-ip-range"
+    ip_cidr_range = "10.0.16.0/20"
+  },
+]
+
+cluster_name = "private-elasticsearch-cluster"
+
+release_name = "elasticsearch-v6"
+
+elasticsearch_num_replicas = "2"
+
+elasticsearch_init_image = "marketplace.gcr.io/google/elasticsearch/ubuntu16_04:6.3"
+
+elasticsearch_image = "marketplace.gcr.io/google/elasticsearch:6.3"

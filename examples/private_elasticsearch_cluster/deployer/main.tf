@@ -45,3 +45,9 @@ resource "google_compute_instance_from_template" "example" {
     shutdown-script       = "${file("${path.module}/scripts/destroy.sh")}"
   }
 }
+
+resource "null_resource" "delete_kubernetes_cluster" {
+  provisioner "local-exec" {
+    command = "gcloud container clusters delete ${var.cluster_name} --zone=${var.zones[0]}"
+  }
+}

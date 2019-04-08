@@ -19,7 +19,7 @@ variable "project_id" {
 }
 
 variable "cluster_name" {
-  description = "A suffix to append to the default cluster name"
+  description = "The name of the kubernetes cluster on which Elasticsearch will deploy"
   default     = "private-elasticsearch-cluster"
 }
 
