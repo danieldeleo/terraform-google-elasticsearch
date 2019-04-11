@@ -16,7 +16,7 @@
 driver:
   name: "terraform"
   command_timeout: 1800
-  root_module_directory: test/fixtures/private_elasticsearch_cluster/deployer
+  root_module_directory: test/fixtures/public_elasticsearch_cluster/
 
 provisioner:
   name: "terraform"

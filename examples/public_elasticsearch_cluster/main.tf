@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-provider "google-beta" {
-  region = "${var.region}"
+provider "google" {
+  version = "~> 2.2"
+  region = "${var.region}}"
 }
 
-provider "kubernetes" {
-  host                   = "${module.kubernetes_private_cluster.endpoint}"
-  cluster_ca_certificate = "${base64decode(module.kubernetes_private_cluster.ca_certificate)}"
-  token                  = "${data.google_client_config.default.access_token}"
+provider "google-beta" {
+  version = "~> 2.2"
+  region = "${var.region}"
 }
 
 resource "google_compute_subnetwork" "elasticsearch_subnetwork" {
@@ -36,24 +36,20 @@ resource "google_compute_subnetwork" "elasticsearch_subnetwork" {
   secondary_ip_range = "${var.secondary_ranges}"
 }
 
-module "kubernetes_private_cluster" {
-  source                     = "github.com/terraform-google-modules/terraform-google-kubernetes-engine/modules/private-cluster/"
+module "kubernetes_public_cluster" {
+  source                     = "terraform-google-modules/kubernetes-engine/google"
   project_id                 = "${var.project_id}"
   name                       = "${var.cluster_name}"
   regional                   = "${var.regional}"
   region                     = "${var.region}"
   zones                      = "${var.zones}"
   network                    = "${var.network}"
-  subnetwork                 = "${var.subnetwork}"
-  ip_range_pods              = "${lookup(google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range.0,"range_name")}"
-  ip_range_services          = "${lookup(google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range.1, "range_name")}"
+  subnetwork                 = "${google_compute_subnetwork.elasticsearch_subnetwork.name}"
+  ip_range_pods              = "${lookup(google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range[0], "range_name")}"
+  ip_range_services          = "${lookup(google_compute_subnetwork.elasticsearch_subnetwork.secondary_ip_range[1], "range_name")}"
   service_account            = ""
-  enable_private_endpoint    = false
-  enable_private_nodes       = true
   network_policy             = true
   horizontal_pod_autoscaling = true
-
-  master_ipv4_cidr_block = "172.16.0.0/28"
 
   remove_default_node_pool = "true"
 
@@ -86,7 +82,10 @@ module "kubernetes_private_cluster" {
 module "kubernetes_elasticsearch_deployment" {
   source       = "../../"
   project_id   = "${var.project_id}"
-  cluster_name = "${module.kubernetes_private_cluster.name}"
+  cluster_name = "${module.kubernetes_public_cluster.name}"
+  host                   = "${module.kubernetes_public_cluster.endpoint}"
+  cluster_ca_certificate = "${base64decode(module.kubernetes_public_cluster.ca_certificate)}"
+  token                  = "${data.google_client_config.default.access_token}"
 }
 
 data "google_client_config" "default" {}

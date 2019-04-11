@@ -47,3 +47,31 @@ resource "kubernetes_service" "elasticsearch_service" {
     type = "LoadBalancer"
   }
 }
+
+resource "null_resource" "remove_forwarding_rule" {
+  provisioner "local-exec" {
+    when    = "destroy"
+    command = <<EOF
+        gcloud compute forwarding-rules delete \
+            $(gcloud compute forwarding-rules list \
+                --project=${var.project_id} \
+                --regions=${var.region} \
+                --quiet \
+                --format="value(name)") \
+          --project=${var.project_id} \
+          --region=${var.region} \
+          --quiet
+
+        gcloud compute backend-services delete \
+            $(gcloud compute backend-services list \
+               --project=${var.project_id} \
+               --regions=${var.region} \
+               --quiet \
+               --format="value(name)") \
+          --project=${var.project_id} \
+          --region=${var.region} \
+          --quiet
+    EOF
+  }
+  depends_on = ["kubernetes_service.elasticsearch_service"]
+}

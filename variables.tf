@@ -18,9 +18,26 @@ variable "project_id" {
   description = "The project ID to host the cluster in"
 }
 
+variable "host" {
+  description = "Endpoint of the Master on the Kubernetes cluster"
+}
+
+variable "cluster_ca_certificate" {
+  description = "CA certificate of the kubernetes cluster"
+}
+
+variable "token" {
+  description = "Access token for accessing the Kubernetes Master"
+}
+
 variable "cluster_name" {
   description = "The name of the kubernetes cluster on which Elasticsearch will deploy"
   default     = "private-elasticsearch-cluster"
+}
+
+variable "region" {
+  description = "Region of the cluster"
+  default = "us-central1"
 }
 
 variable "release_name" {

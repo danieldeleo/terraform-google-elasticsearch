@@ -133,7 +133,7 @@ docker_verify:
 		${DOCKER_REPO_BASE_KITCHEN_TERRAFORM} \
 		/bin/bash -c "source test/ci_integration.sh && setup_environment && kitchen verify"
 
-.PHONY: docker_destroy
+.PHONY: docker_destroymake
 docker_destroy:
 	docker run --rm -it \
 		-e PROJECT_ID \

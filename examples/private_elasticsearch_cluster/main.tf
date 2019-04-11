@@ -18,12 +18,6 @@ provider "google-beta" {
   region = "${var.region}"
 }
 
-provider "kubernetes" {
-  host                   = "${module.kubernetes_private_cluster.endpoint}"
-  cluster_ca_certificate = "${base64decode(module.kubernetes_private_cluster.ca_certificate)}"
-  token                  = "${data.google_client_config.default.access_token}"
-}
-
 data "google_compute_subnetwork" "elasticsearch_subnetwork" {
   project = "${var.project_id}"
   region  = "${var.region}"
@@ -88,6 +82,9 @@ module "kubernetes_elasticsearch_deployment" {
   source       = "../../"
   project_id   = "${var.project_id}"
   cluster_name = "${module.kubernetes_private_cluster.name}"
+  host                   = "${module.kubernetes_private_cluster.endpoint}"
+  cluster_ca_certificate = "${base64decode(module.kubernetes_private_cluster.ca_certificate)}"
+  token                  = "${data.google_client_config.default.access_token}"
 }
 
 data "google_client_config" "default" {}
