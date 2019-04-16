@@ -38,7 +38,7 @@ setup_environment() {
 
   # Terraform variables
   export TF_VAR_project_id="$PROJECT_ID"
-  export TF_VAR_cluster_name="private-elasticsearch-cluster"
+  export TF_VAR_cluster_name="public-elasticsearch-cluster"
 }
 
 main() {

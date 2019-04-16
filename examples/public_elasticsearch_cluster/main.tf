@@ -51,11 +51,11 @@ module "kubernetes_public_cluster" {
   network_policy             = true
   horizontal_pod_autoscaling = true
 
-  remove_default_node_pool = "true"
+  remove_default_node_pool = true
 
   node_pools = [
     {
-      name               = "default-node-pool"
+      name               = "elasticsearch-node-pool"
       machine_type       = "n1-standard-2"
       min_count          = 0
       max_count          = 100
@@ -70,12 +70,30 @@ module "kubernetes_public_cluster" {
     },
   ]
 
+  node_pools_oauth_scopes = {
+    all = []
+    elasticsearch-node-pool = ["https://www.googleapis.com/auth/cloud-platform"]
+  }
+  node_pools_taints = {
+    all = []
+    elasticsearch-node-pool = []
+  }
+  node_pools_tags = {
+    all = []
+    elasticsearch-node-pool = ["elasticsearch-node-pool"]
+    default-node-pool = ["default-node-pool"]
+  }
+  node_pools_labels = {
+    all={}
+    elasticsearch-node-pool = {
+      default-node-pool = "false"
+    }
+
+  }
+
   node_pools_metadata = {
     all = {}
-
-    default-node-pool = {
-      disable-legacy-endpoints = "true"
-    }
+    elasticsearch-node-pool = {}
   }
 }
 

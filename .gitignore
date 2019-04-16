@@ -51,6 +51,7 @@ credentials.json
 
 # Ignore all of .idea
 .idea
+*.iml
 
 # User-specific stuff
 .idea/**/workspace.xml
