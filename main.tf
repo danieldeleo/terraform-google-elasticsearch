@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-provider "google-beta" {}
+provider "google-beta" {
+  version = "2.3"
+}
 
 data "google_client_config" "default" {}
 

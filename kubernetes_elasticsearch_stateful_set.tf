@@ -156,7 +156,6 @@ resource "kubernetes_stateful_set" "elasticsearch_stateful_set" {
 
           config_map {
             name         = "${var.release_name}-configmap"
-            default_mode = 420
           }
         }
       }
